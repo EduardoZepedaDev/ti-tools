@@ -58,4 +58,24 @@ const maintenanceSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Maintenance", maintenanceSchema);
+const placeWorkSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    ubication: {
+      type: String,
+      required: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Maintenance = mongoose.model("Maintenance", maintenanceSchema);
+const PlaceWork = mongoose.model("PlaceWork", placeWorkSchema);
+
+export default { Maintenance, PlaceWork };

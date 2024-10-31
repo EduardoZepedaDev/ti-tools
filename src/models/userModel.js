@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    jobTitle: {
+      type: String,
+      required: true,
+    },
     profilePicture: {
       type: String, // Guarda la ruta de la imagen de perfil
       default: "", // Puedes definir una imagen predeterminada

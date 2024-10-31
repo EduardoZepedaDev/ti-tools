@@ -23,8 +23,16 @@ export const uploadProfilePicture = async (req, res) => {
 
 // Registro
 export const register = async (req, res) => {
-  const { name, lastname, username, email, password, role, profilePicture } =
-    req.body;
+  const {
+    name,
+    lastname,
+    username,
+    email,
+    password,
+    role,
+    profilePicture,
+    jobTitle,
+  } = req.body;
 
   try {
     const userFound = await User.findOne({ email });
@@ -40,6 +48,7 @@ export const register = async (req, res) => {
       password: passHash,
       role,
       profilePicture,
+      jobTitle,
     });
 
     const userSaved = await newUser.save();
@@ -54,6 +63,7 @@ export const register = async (req, res) => {
       email: userSaved.email,
       role: userSaved.role,
       profilePicture: userSaved.profilePicture,
+      jobTitle: userSaved.jobTitle,
       createdAt: userSaved.createdAt,
       updatedAt: userSaved.updatedAt,
     });
@@ -69,19 +79,20 @@ export const login = async (req, res) => {
 
   try {
     const userFound = await User.findOne({ email });
-    if (!userFound) return res.status(400).send("Usuario no encontrado");
+
+    if (!userFound) {
+      return res.status(400).send("Usuario no encontrado");
+    }
 
     const isMatch = await bcrypt.compare(password, userFound.password);
-    if (!isMatch)
+
+    if (!isMatch) {
       return res.status(400).json({ message: "Contraseña incorrecta" });
+    }
 
-    const token = createAccessToken({ id: userFound.id });
+    const token = await createAccessToken({ id: userFound.id });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    res.cookie("token", token, {});
     res.json({
       id: userFound.id,
       name: userFound.name,
@@ -90,6 +101,7 @@ export const login = async (req, res) => {
       email: userFound.email,
       role: userFound.role,
       profilePicture: userFound.profilePicture,
+      jobTitle: userFound.jobTitle,
       createdAt: userFound.createdAt,
       updatedAt: userFound.updatedAt,
     });
@@ -105,55 +117,47 @@ export const logout = (req, res) => {
   res.send("Sesión cerrada");
 };
 
-// Perfil del usuario
+//PROFILE
 export const profile = async (req, res) => {
-  try {
-    const userFound = await User.findById(req.user.id);
-    if (!userFound)
-      return res.status(400).json({ message: "Usuario no encontrado" });
-
-    res.json({
-      id: userFound.id,
-      name: userFound.name,
-      lastname: userFound.lastname,
-      username: userFound.username,
-      email: userFound.email,
-      role: userFound.role,
-      createdAt: userFound.createdAt,
-      updatedAt: userFound.updatedAt,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error al obtener el perfil");
-  }
+  const userFound = await User.findById(req.user.id);
+  if (!userFound)
+    return res.status(400).json({ message: "Usuario no encontrado" });
+  return res.json({
+    id: userFound.id,
+    name: userFound.name,
+    lastname: userFound.lastname,
+    username: userFound.username,
+    email: userFound.email,
+    role: userFound.role,
+    profilePicture: userFound.profilePicture,
+    jobTitle: userFound.jobTitle,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt,
+  });
 };
 
-// Verificación de Token
-export const verifyToken = (req, res) => {
+export const verifyToken = async (req, res) => {
   const { token } = req.cookies;
   if (!token) return res.status(401).json({ message: "No autorizado" });
 
   jwt.verify(token, "secretkey123", async (err, user) => {
     if (err) return res.status(401).json({ message: "Token inválido" });
 
-    try {
-      const userFound = await User.findById(user.id);
-      if (!userFound)
-        return res.status(401).json({ message: "Usuario no encontrado" });
+    const userFound = await User.findById(user.id);
+    if (!userFound)
+      return res.status(401).json({ message: "Usuario no encontrado" });
 
-      res.json({
-        id: userFound.id,
-        name: userFound.name,
-        lastname: userFound.lastname,
-        username: userFound.username,
-        email: userFound.email,
-        role: userFound.role,
-        createdAt: userFound.createdAt,
-        updatedAt: userFound.updatedAt,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Error en la verificación");
-    }
+    return res.json({
+      id: userFound.id,
+      name: userFound.name,
+      lastname: userFound.lastname,
+      username: userFound.username,
+      email: userFound.email,
+      role: userFound.role,
+      profilePicture: userFound.profilePicture,
+      jobTitle: userFound.jobTitle,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
+    });
   });
 };

@@ -1,4 +1,3 @@
-import express from "express";
 import { Router } from "express";
 import upload from "../middlewares/uploadMiddleware.js";
 import {
@@ -13,7 +12,7 @@ import { authRequired } from "../middlewares/validateToken.js";
 import { validateSchema } from "../middlewares/validatorMiddleware.js";
 import { registerSchema, loginSchema } from "../schemas/authSchema.js";
 
-const router = express.Router();
+const router = Router();
 
 //Ruta para cargar la imagen de perfil del usuario
 router.post(

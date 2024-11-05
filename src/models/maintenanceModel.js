@@ -13,9 +13,9 @@ const maintenanceSchema = new mongoose.Schema(
       trim: true,
     },
     ubication: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PlaceWork", // Referencia al modelo PlaceWork
       required: true,
-      trim: true,
     },
     reasonrequest: {
       type: String,
@@ -52,30 +52,46 @@ const maintenanceSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-const placeWorkSchema = new mongoose.Schema(
-  {
-    name: {
+    folio: {
       type: String,
-      required: true,
-      trim: true,
-    },
-    ubication: {
-      type: String,
-      required: false,
+      unique: true,
     },
   },
   {
     timestamps: true,
   }
 );
+// Pre-save hook to generate the folio
+maintenanceSchema.pre("save", async function (next) {
+  if (!this.folio) {
+    // Only generate folio if it doesn't already exist
+    try {
+      // Load the related ubication document
+      const ubicationDoc = await mongoose
+        .model("PlaceWork")
+        .findById(this.ubication);
+      if (!ubicationDoc) {
+        throw new Error("Ubicación no encontrada");
+      }
 
-const Maintenance = mongoose.model("Maintenance", maintenanceSchema);
-const PlaceWork = mongoose.model("PlaceWork", placeWorkSchema);
+      // Count the number of maintenance records for the same ubication
+      const count = await mongoose
+        .model("Maintenance")
+        .countDocuments({ ubication: this.ubication });
 
-export default { Maintenance, PlaceWork };
+      // Format date as YYYYMMDD
+      const formattedDate = new Date()
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "");
+
+      // Generate folio with the specified format
+      this.folio = `Mtto-${ubicationDoc.name}-${formattedDate}-${count + 1}`;
+    } catch (error) {
+      return next(error); // Pass error to the next middleware if any
+    }
+  }
+  next();
+});
+
+export default mongoose.model("Maintenance", maintenanceSchema);

@@ -5,7 +5,10 @@ export const getMaintenances = async (req, res) => {
   try {
     const maintenances = await Maintenance.find({
       user: req.user.id,
-    }).populate("user"); // Llena el campo "user" con los datos del usuario
+    })
+      .populate("user") // Llena el campo "user" con los datos del usuario
+      .populate("ubication"); // Llena el campo "ubication" con los datos de la ubicación
+
     res.status(200).json(maintenances); // Envía las solicitudes en formato JSON
   } catch (error) {
     res.status(500).json({

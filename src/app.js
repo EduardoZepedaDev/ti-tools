@@ -6,6 +6,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/auth.routes.js";
 import maintenanceRoutes from "./routes/maintenance.routes.js";
+import placeRoutes from "./routes/place.routes.js";
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use(cookieParser());
 
 app.use("/api", authRoutes);
 app.use("/api", maintenanceRoutes);
+app.use("/api", placeRoutes);
 
 export default app;

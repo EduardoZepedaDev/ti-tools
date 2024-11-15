@@ -3,36 +3,10 @@ import bcrypt from "bcryptjs";
 import { createAccessToken } from "../libs/jwt.js";
 import jwt from "jsonwebtoken";
 
-export const uploadProfilePicture = async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const profilePictureUrl = req.file.path; // Ruta donde se guarda la imagen
-
-    // Actualiza el perfil del usuario con la URL de la imagen
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { profilePicture: profilePictureUrl },
-      { new: true }
-    );
-
-    res.status(200).json({ message: "Imagen cargada exitosamente", user });
-  } catch (error) {
-    res.status(500).json({ message: "Error al cargar la imagen", error });
-  }
-};
-
 // Registro
 export const register = async (req, res) => {
-  const {
-    name,
-    lastname,
-    username,
-    email,
-    password,
-    role,
-    profilePicture,
-    jobTitle,
-  } = req.body;
+  const { name, lastname, username, email, password, role, jobTitle } =
+    req.body;
 
   try {
     const userFound = await User.findOne({ email });
@@ -47,8 +21,8 @@ export const register = async (req, res) => {
       email,
       password: passHash,
       role,
-      profilePicture,
       jobTitle,
+      profilePicture: req.file ? req.file.path : "", // Guarda la URL de Cloudinary
     });
 
     const userSaved = await newUser.save();
@@ -62,10 +36,10 @@ export const register = async (req, res) => {
       username: userSaved.username,
       email: userSaved.email,
       role: userSaved.role,
-      profilePicture: userSaved.profilePicture,
       jobTitle: userSaved.jobTitle,
       createdAt: userSaved.createdAt,
       updatedAt: userSaved.updatedAt,
+      profilePicture: userSaved.profilePicture,
     });
   } catch (error) {
     console.error(error);
@@ -136,6 +110,7 @@ export const profile = async (req, res) => {
   });
 };
 
+// Verify token
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;
   if (!token) return res.status(401).json({ message: "No autorizado" });

@@ -16,6 +16,5 @@ export const ticketSchema = z.object({
     .optional()
     .default(() => new Date()), // Por defecto, se usará la fecha actual si no se proporciona
   folio: z.string().optional(), // Se puede establecer automáticamente, por lo que es opcional aquí
-  technician: z.string().min(1, "El técnico es requerido").trim(),
   insumos: z.array(insumoSchema).nonempty("Se requiere al menos un insumo"), // Debe ser un arreglo de insumos
 });

@@ -20,14 +20,13 @@ export const getTickets = async (req, res) => {
 
 // Crear tickets
 export const createTickets = async (req, res) => {
-  const { name, date, insumos, technician, ubication } = req.body;
+  const { name, date, insumos, ubication } = req.body;
 
   try {
     const newTicket = new Ticket({
       name,
       date,
       insumos,
-      technician,
       ubication,
       user: req.user.id,
     });
@@ -60,7 +59,7 @@ export const getTicket = async (req, res) => {
 // Actualizar un ticket
 export const updateTicket = async (req, res) => {
   const { id } = req.params;
-  const { name, date, insumos, technician, ubication } = req.body;
+  const { name, date, insumos, ubication } = req.body;
 
   try {
     const updatedTicket = await Ticket.findByIdAndUpdate(
@@ -69,7 +68,6 @@ export const updateTicket = async (req, res) => {
         name,
         date,
         insumos,
-        technician,
         ubication,
       },
       { new: true } // Devuelve la solicitud actualizada

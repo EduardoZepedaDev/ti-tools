@@ -9,14 +9,17 @@ import {
 } from "../controllers/maintenanceController.js";
 import { validateSchema } from "../middlewares/validatorMiddleware.js";
 import { maintenanceSchema } from "../schemas/maintenanceSchema.js";
+import upload from "../middlewares/multerMaintenance.js";
 
 const router = Router();
 
 router.get("/maintenances", authRequired, getMaintenances);
 router.get("/maintenance/:id", authRequired, getMaintenance);
+
 router.post(
   "/maintenances",
   authRequired,
+  upload.array("images", 10),
   validateSchema(maintenanceSchema),
   createMaintenance
 );

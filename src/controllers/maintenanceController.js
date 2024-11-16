@@ -34,6 +34,7 @@ export const createMaintenance = async (req, res) => {
   } = req.body;
 
   try {
+    const images = req.files.map((file) => file.path);
     const newMaintenance = new Maintenance({
       nameUser,
       categoryUser,

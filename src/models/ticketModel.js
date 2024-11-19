@@ -27,32 +27,14 @@ const ticketSchema = new mongoose.Schema(
     },
     insumos: [
       {
-        number: {
-          type: Number,
-          required: true,
-        },
         insumo: {
-          type: String,
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Insumo",
           required: true,
-          trim: true,
         },
-        quantity: {
+        quantityUsed: {
           type: Number,
           required: true,
-        },
-        unit: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        description: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        remarks: {
-          type: String,
-          trim: true,
         },
       },
     ],
@@ -87,6 +69,12 @@ ticketSchema.pre("save", async function (next) {
       return next(error); // Enviar el error al próximo middleware si algo falla
     }
   }
+  next();
+});
+
+ticketSchema.pre(/^find/, function (next) {
+  this.populate("user", "id username role"); // Aplica a cualquier consulta de tipo find
+  this.populate("ubication", "id name ubication");
   next();
 });
 

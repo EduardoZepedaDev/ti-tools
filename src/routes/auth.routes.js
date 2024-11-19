@@ -5,6 +5,7 @@ import {
   logout,
   profile,
   verifyToken,
+  getUsers,
 } from "../controllers/userController.js";
 import { authRequired } from "../middlewares/validateToken.js";
 import { validateSchema } from "../middlewares/validatorMiddleware.js";
@@ -13,6 +14,7 @@ import upload from "../middlewares/multerProfile.js";
 
 const router = Router();
 
+router.get("/users", authRequired, getUsers);
 router.post(
   "/register",
   upload.single("profilePicture"), // Middleware para manejar la carga de imágenes

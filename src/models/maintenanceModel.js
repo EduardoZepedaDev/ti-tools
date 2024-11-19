@@ -61,12 +61,9 @@ const maintenanceSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-// Pre-save hook to generate the folio
 maintenanceSchema.pre("save", async function (next) {
   if (!this.folio) {
-    // Only generate folio if it doesn't already exist
     try {
-      // Load the related ubication document
       const ubicationDoc = await mongoose
         .model("PlaceWork")
         .findById(this.ubication);
@@ -74,23 +71,26 @@ maintenanceSchema.pre("save", async function (next) {
         throw new Error("Ubicación no encontrada");
       }
 
-      // Count the number of maintenance records for the same ubication
       const count = await mongoose
         .model("Maintenance")
         .countDocuments({ ubication: this.ubication });
 
-      // Format date as YYYYMMDD
       const formattedDate = new Date()
         .toISOString()
         .split("T")[0]
         .replace(/-/g, "");
 
-      // Generate folio with the specified format
       this.folio = `Mtto-${ubicationDoc.name}-${formattedDate}-${count + 1}`;
     } catch (error) {
-      return next(error); // Pass error to the next middleware if any
+      return next(error);
     }
   }
+  next();
+});
+
+maintenanceSchema.pre(/^find/, function (next) {
+  this.populate("user", "id username role"); // Aplica a cualquier consulta de tipo find
+  this.populate("ubication", "id name ubication");
   next();
 });
 

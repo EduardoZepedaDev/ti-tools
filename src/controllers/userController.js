@@ -3,6 +3,21 @@ import bcrypt from "bcryptjs";
 import { createAccessToken } from "../libs/jwt.js";
 import jwt from "jsonwebtoken";
 
+export const getUsers = async (req, res) => {
+  try {
+    // Busca todos los usuarios en la base de datos
+    const users = await User.find({}); // Puedes especificar los campos que deseas retornar
+
+    res.status(200).json(users); // Envía los usuarios en formato JSON
+  } catch (error) {
+    console.error(error); // Muestra el error en la consola para depuración
+    res.status(500).json({
+      message: "Error al obtener los usuarios",
+      error,
+    });
+  }
+};
+
 // Registro
 export const register = async (req, res) => {
   const { name, lastname, username, email, password, role, jobTitle } =

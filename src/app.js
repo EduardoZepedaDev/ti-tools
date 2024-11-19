@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes.js";
 import maintenanceRoutes from "./routes/maintenance.routes.js";
 import placeRoutes from "./routes/place.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
+import insumoRoutes from "./routes/insumo.routes.js";
 
 const app = express();
 app.use(cors());
@@ -20,5 +21,6 @@ app.use("/api", authRoutes);
 app.use("/api", maintenanceRoutes);
 app.use("/api", placeRoutes);
 app.use("/api", ticketRoutes);
+app.use("/api", insumoRoutes);
 
 export default app;

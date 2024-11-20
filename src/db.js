@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
-const url =
-  "mongodb+srv://soporteti:Us1PyGa2KSLOvYyZ@cluster-ti-tools.ronju.mongodb.net/?retryWrites=true&w=majority&appName=Cluster-Ti-TOOLS";
+const url = "mongodb://localhost/ti-tools-back";
 
 export const connectDB = async () => {
   try {

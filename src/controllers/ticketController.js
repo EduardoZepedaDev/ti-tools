@@ -1,4 +1,5 @@
 import Ticket from "../models/ticketModel.js";
+import Insumo from "../models/insumoModel.js";
 
 // Obtener todas los tickets
 export const getTickets = async (req, res) => {
@@ -23,17 +24,52 @@ export const createTickets = async (req, res) => {
   const { name, date, insumos, ubication } = req.body;
 
   try {
+    const updatedInsumos = [];
+
+    // Verifica y actualiza las cantidades de cada insumo
+    for (const item of insumos) {
+      const { insumo, quantityUsed } = item;
+
+      // Busca el insumo en la base de datos
+      const insumoFound = await Insumo.findById(insumo);
+      if (!insumoFound) {
+        return res
+          .status(404)
+          .json({ message: `Insumo con ID ${insumo} no encontrado` });
+      }
+
+      // Verifica si hay suficiente cantidad disponible
+      if (insumoFound.quantity < quantityUsed) {
+        return res.status(400).json({
+          message: `Cantidad insuficiente para el insumo: ${insumoFound.insumo}`,
+        });
+      }
+
+      // Descuenta la cantidad utilizada
+      insumoFound.quantity -= quantityUsed;
+      await insumoFound.save();
+
+      // Agrega a la lista de insumos actualizados
+      updatedInsumos.push({
+        insumo: insumoFound._id,
+        quantityUsed,
+      });
+    }
+
+    // Crea el ticket con los insumos actualizados
     const newTicket = new Ticket({
       name,
       date,
-      insumos,
       ubication,
+      insumos: updatedInsumos,
       user: req.user.id,
     });
 
-    await newTicket.save(); // Guarda la solicitud de mantenimiento en la base de datos
-    res.status(201).json(newTicket); // Devuelve la solicitud recién creada
+    await newTicket.save();
+
+    res.status(201).json(newTicket);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error al crear el ticket", error });
   }
 };

@@ -6,6 +6,7 @@ import {
   profile,
   verifyToken,
   getUsers,
+  deleteUser,
 } from "../controllers/userController.js";
 import { authRequired } from "../middlewares/validateToken.js";
 import { validateSchema } from "../middlewares/validatorMiddleware.js";
@@ -25,5 +26,6 @@ router.post("/login", validateSchema(loginSchema), login);
 router.post("/logout", logout);
 router.get("/verify", verifyToken);
 router.get("/profile", authRequired, profile);
+router.delete("/user/:id", authRequired, deleteUser);
 
 export default router;

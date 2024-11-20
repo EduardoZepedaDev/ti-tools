@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { createAccessToken } from "../libs/jwt.js";
 import jwt from "jsonwebtoken";
 
+// Get users
 export const getUsers = async (req, res) => {
   try {
     // Busca todos los usuarios en la base de datos
@@ -150,4 +151,24 @@ export const verifyToken = async (req, res) => {
       updatedAt: userFound.updatedAt,
     });
   });
+};
+
+// Eliminar un usuario
+export const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(id); // Elimina la solicitud por ID
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    res.status(200).json({ message: "Usuario eliminado con éxito" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al eliminar el usuario",
+      error,
+    });
+  }
 };

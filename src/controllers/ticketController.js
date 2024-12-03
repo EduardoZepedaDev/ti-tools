@@ -6,9 +6,7 @@ export const getTickets = async (req, res) => {
   try {
     const tickets = await Ticket.find({
       user: req.user.id,
-    })
-      .populate("user") // Llena el campo "user" con los datos del usuario
-      .populate("ubication"); // Llena el campo "ubication" con los datos de la ubicación
+    }).populate("user"); // Llena el campo "user" con los datos del usuario
 
     res.status(200).json(tickets); // Envía las solicitudes en formato JSON
   } catch (error) {
@@ -21,7 +19,7 @@ export const getTickets = async (req, res) => {
 
 // Crear tickets
 export const createTickets = async (req, res) => {
-  const { name, date, insumos, ubication } = req.body;
+  const { name, date, insumos } = req.body;
 
   try {
     const updatedInsumos = [];
@@ -49,10 +47,11 @@ export const createTickets = async (req, res) => {
       insumoFound.quantity -= quantityUsed;
       await insumoFound.save();
 
-      // Agrega a la lista de insumos actualizados
+      // Agrega a la lista de insumos actualizados con toda la información del insumo
       updatedInsumos.push({
-        insumo: insumoFound._id,
+        insumo: insumoFound,
         quantityUsed,
+        description: insumoFound,
       });
     }
 
@@ -60,14 +59,20 @@ export const createTickets = async (req, res) => {
     const newTicket = new Ticket({
       name,
       date,
-      ubication,
       insumos: updatedInsumos,
       user: req.user.id,
     });
 
     await newTicket.save();
 
-    res.status(201).json(newTicket);
+    // Responde con el ticket creado y los insumos actualizados
+    res.status(201).json({
+      ticket: newTicket,
+      updatedInsumos: updatedInsumos.map((item) => ({
+        insumo: item.insumo, // Devuelve el objeto completo del insumo
+        quantityUsed: item.quantityUsed,
+      })),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al crear el ticket", error });
@@ -95,7 +100,7 @@ export const getTicket = async (req, res) => {
 // Actualizar un ticket
 export const updateTicket = async (req, res) => {
   const { id } = req.params;
-  const { name, date, insumos, ubication } = req.body;
+  const { name, date, insumos } = req.body;
 
   try {
     const updatedTicket = await Ticket.findByIdAndUpdate(
@@ -104,7 +109,6 @@ export const updateTicket = async (req, res) => {
         name,
         date,
         insumos,
-        ubication,
       },
       { new: true } // Devuelve la solicitud actualizada
     );
@@ -127,14 +131,30 @@ export const deleteTicket = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deletedTicket = await Ticket.findByIdAndDelete(id); // Elimina la solicitud por ID
+    // Buscar el ticket a eliminar
+    const deletedTicket = await Ticket.findById(id).populate("insumos.insumo");
 
     if (!deletedTicket) {
       return res.status(404).json({ message: "Vale de salida no encontrada" });
     }
 
+    // Recuperar los insumos asociados y devolver la cantidad
+    for (const item of deletedTicket.insumos) {
+      const { insumo, quantityUsed } = item;
+
+      if (insumo) {
+        // Aumentar la cantidad de insumo al eliminar el ticket
+        insumo.quantity += quantityUsed;
+        await insumo.save();
+      }
+    }
+
+    // Eliminar el ticket
+    await Ticket.findByIdAndDelete(id);
+
     res.status(200).json({ message: "Vale de salida eliminada con éxito" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: "Error al eliminar el Vale de salida",
       error,

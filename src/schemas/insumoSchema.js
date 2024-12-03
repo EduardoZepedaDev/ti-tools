@@ -13,5 +13,4 @@ export const insumoSchema = z.object({
     })
     .int("La cantidad debe ser un número entero")
     .nonnegative("La cantidad no puede ser negativa"),
-  remarks: z.string().optional(),
 });

@@ -20,11 +20,6 @@ const ticketSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    ubication: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "PlaceWork", // Referencia al modelo PlaceWork
-      required: true,
-    },
     insumos: [
       {
         insumo: {
@@ -74,7 +69,7 @@ ticketSchema.pre("save", async function (next) {
 
 ticketSchema.pre(/^find/, function (next) {
   this.populate("user", "id username role"); // Aplica a cualquier consulta de tipo find
-  this.populate("ubication", "id name ubication");
+  this.populate("insumos.insumo", "id insumo description");
   next();
 });
 

@@ -11,15 +11,7 @@ const insumoSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    unit: {
-      type: String,
-      trim: true,
-    },
     description: {
-      type: String,
-      trim: true,
-    },
-    remarks: {
       type: String,
       trim: true,
     },

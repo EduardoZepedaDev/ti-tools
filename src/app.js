@@ -6,7 +6,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
-import maintenanceRoutes from "./routes/maintenance.routes.js";
+// import maintenancesmeetingRoutes from "./routes/maintenancesmeeting.routes.js";
 import placeRoutes from "./routes/place.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import insumoRoutes from "./routes/insumo.routes.js";
@@ -17,10 +17,10 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api", authRoutes);
-app.use("/api", maintenanceRoutes);
-app.use("/api", placeRoutes);
-app.use("/api", ticketRoutes);
-app.use("/api", insumoRoutes);
+app.use("/v1", authRoutes);
+// app.use("/v1", maintenancesmeetingRoutes);
+app.use("/v1", placeRoutes);
+app.use("/v1", ticketRoutes);
+app.use("/v1", insumoRoutes);
 
 export default app;

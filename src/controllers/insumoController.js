@@ -18,20 +18,18 @@ export const getInsumos = async (req, res) => {
 
 // Crear insumos
 export const createInsumos = async (req, res) => {
-  const { insumo, quantity, unit, description, remarks } = req.body;
+  const { insumo, quantity, description } = req.body;
 
   try {
     console.log("Datos recibidos:", {
       insumo,
       quantity,
-      unit,
       description,
-      remarks,
       user: req.user,
     });
 
     // Verifica que los valores esenciales no sean undefined
-    if (!insumo || !quantity || !unit) {
+    if (!insumo || !quantity) {
       return res.status(400).json({ message: "Faltan datos obligatorios" });
     }
 
@@ -53,9 +51,7 @@ export const createInsumos = async (req, res) => {
     const newInsumo = new Insumo({
       insumo,
       quantity,
-      unit,
       description,
-      remarks,
       user: req.user.id,
     });
 
@@ -91,7 +87,7 @@ export const getInsumo = async (req, res) => {
 // Actualizar un insumoo
 export const updateInsumo = async (req, res) => {
   const { id } = req.params;
-  const { insumo, quantity, unit, description, remarks } = req.body;
+  const { insumo, quantity, description } = req.body;
 
   try {
     const updatedInsumo = await Insumo.findByIdAndUpdate(
@@ -99,15 +95,13 @@ export const updateInsumo = async (req, res) => {
       {
         insumo,
         quantity,
-        unit,
         description,
-        remarks,
       },
       { new: true } // Devuelve la solicitud actualizada
     );
 
     if (!updatedInsumo) {
-      return res.status(404).json({ message: "Insumi no encontrado" });
+      return res.status(404).json({ message: "Insumo no encontrado" });
     }
 
     res.status(200).json(updatedInsumo); // Devuelve la solicitud actualizada

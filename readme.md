@@ -11,7 +11,7 @@
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/usuario/repositorio.git
+   git clone https://github.com/EduardoZepedaDev/ti-tools-back.git
 
 2. Entrar al archivo:
     ```bash

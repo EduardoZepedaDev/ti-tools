@@ -3,9 +3,7 @@ import Cctv from "../models/maintenanceCCTVModel.js";
 // Obtener todos los mantenimientos
 export const getMaintenancesCctv = async (req, res) => {
   try {
-    const cctvs = await Cctv.find({
-      user: req.user.id,
-    }).populate("user", "id username role"); // Llena el campo "user" con los datos del usuario
+    const cctvs = await Cctv.find(); // Llena el campo "user" con los datos del usuario
 
     res.status(200).json(cctvs); // Envía las solicitudes en formato JSON
   } catch (error) {
@@ -19,8 +17,7 @@ export const getMaintenancesCctv = async (req, res) => {
 // Crear mantenimientos
 export const createMaintenanceCctv = async (req, res) => {
   const {
-    name,
-    category,
+    worker,
     date,
     cctvfailure_detail,
     technical_inspectionFindings,
@@ -34,8 +31,7 @@ export const createMaintenanceCctv = async (req, res) => {
 
     // Crear el documento
     const newMaintenanceCctv = new Cctv({
-      name,
-      category,
+      worker,
       date,
       cctvfailure_detail,
       technical_inspectionFindings,
@@ -54,10 +50,7 @@ export const createMaintenanceCctv = async (req, res) => {
   }
 };
 
-// Obtener un mantenimiento por ID
-
 // Actualizar un mantenimiento
-// Actualizar mantenimiento
 export const updateMaintenanceCctv = async (req, res) => {
   const {
     name,

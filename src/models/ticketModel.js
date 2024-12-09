@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 
 const ticketSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     date: {
       type: Date,
       default: Date.now,
@@ -19,6 +14,10 @@ const ticketSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    worker: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Worker",
     },
     insumos: [
       {
@@ -70,6 +69,7 @@ ticketSchema.pre("save", async function (next) {
 ticketSchema.pre(/^find/, function (next) {
   this.populate("user", "id username role"); // Aplica a cualquier consulta de tipo find
   this.populate("insumos.insumo", "id insumo description");
+  this.populate("worker", "id name lastname categoryJob");
   next();
 });
 

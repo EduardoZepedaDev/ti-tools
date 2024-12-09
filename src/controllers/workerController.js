@@ -14,7 +14,7 @@ export const getWorkers = async (req, res) => {
 
 // Crear un trabajador
 export const createWorker = async (req, res) => {
-  const { name, lastname, categoryJob, ubication } = req.body;
+  const { name, lastname, categoryJob } = req.body;
 
   try {
     // Crear un nuevo trabajador
@@ -22,7 +22,6 @@ export const createWorker = async (req, res) => {
       name,
       lastname,
       categoryJob,
-      ubication,
     });
     await newWorker.save();
 
@@ -52,7 +51,7 @@ export const getWorkerById = async (req, res) => {
 // Actualizar un trabajador por ID
 export const updateWorker = async (req, res) => {
   const { id } = req.params;
-  const { name, lastname, categoryJob, ubication } = req.body;
+  const { name, lastname, categoryJob } = req.body;
 
   try {
     const updatedWorker = await Worker.findByIdAndUpdate(
@@ -61,7 +60,6 @@ export const updateWorker = async (req, res) => {
         name,
         lastname,
         categoryJob,
-        ubication,
       },
       { new: true, runValidators: true } // Devuelve el documento actualizado y aplica validaciones
     );

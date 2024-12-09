@@ -6,7 +6,9 @@ export const getTickets = async (req, res) => {
   try {
     const tickets = await Ticket.find({
       user: req.user.id,
-    }).populate("user"); // Llena el campo "user" con los datos del usuario
+    })
+      .populate("user")
+      .populate("worker"); // Llena el campo "user" con los datos del usuario
 
     res.status(200).json(tickets); // Envía las solicitudes en formato JSON
   } catch (error) {
@@ -19,7 +21,7 @@ export const getTickets = async (req, res) => {
 
 // Crear tickets
 export const createTickets = async (req, res) => {
-  const { name, date, insumos } = req.body;
+  const { worker, date, insumos } = req.body;
 
   try {
     const updatedInsumos = [];
@@ -57,9 +59,9 @@ export const createTickets = async (req, res) => {
 
     // Crea el ticket con los insumos actualizados
     const newTicket = new Ticket({
-      name,
       date,
       insumos: updatedInsumos,
+      worker,
       user: req.user.id,
     });
 
@@ -100,13 +102,13 @@ export const getTicket = async (req, res) => {
 // Actualizar un ticket
 export const updateTicket = async (req, res) => {
   const { id } = req.params;
-  const { name, date, insumos } = req.body;
+  const { worker, date, insumos } = req.body;
 
   try {
     const updatedTicket = await Ticket.findByIdAndUpdate(
       id,
       {
-        name,
+        worker,
         date,
         insumos,
       },
@@ -131,25 +133,27 @@ export const deleteTicket = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Buscar el ticket a eliminar
     const deletedTicket = await Ticket.findById(id).populate("insumos.insumo");
 
     if (!deletedTicket) {
       return res.status(404).json({ message: "Vale de salida no encontrada" });
     }
 
-    // Recuperar los insumos asociados y devolver la cantidad
     for (const item of deletedTicket.insumos) {
       const { insumo, quantityUsed } = item;
 
-      if (insumo) {
-        // Aumentar la cantidad de insumo al eliminar el ticket
+      if (insumo && !isNaN(insumo.quantity) && !isNaN(quantityUsed)) {
         insumo.quantity += quantityUsed;
         await insumo.save();
+      } else {
+        console.error("Datos inválidos en insumo:", {
+          insumo: insumo?._id,
+          quantity: insumo?.quantity,
+          quantityUsed,
+        });
       }
     }
 
-    // Eliminar el ticket
     await Ticket.findByIdAndDelete(id);
 
     res.status(200).json({ message: "Vale de salida eliminada con éxito" });

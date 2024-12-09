@@ -3,16 +3,9 @@ import mongoose from "mongoose";
 const maintenanceCCTVSchema = new mongoose.Schema(
   {
     //Nombre del solicitante
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    //Categoría del solicitante
-    category: {
-      type: String,
-      required: true,
-      trim: true,
+    worker: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Worker",
     },
     //Técnico que realiza el mantenimiento
     user: {
@@ -42,25 +35,12 @@ const maintenanceCCTVSchema = new mongoose.Schema(
       trim: true,
     },
     //Números de serie de equipos que conforman el CCTV y Estado de cada equipo
-    cctvEquipment: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    // [
-    //   {
-    //     serialnumber: {
-    //       type: String,
-    //       trim: true,
-    //       required: true,
-    //     },
-    //     status: {
-    //       type: String,
-    //       trim: true,
-    //       required: true,
-    //     },
-    //   },
-    // ],
+    cctvEquipment: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Active", // Cambiar esto a un arreglo de ObjectId
+      },
+    ],
     //Anexo fotográfico del CCTV (Equipo NVR, Antena, Gabinete, Regulador, Cámara individual)
     images: {
       type: [String],
@@ -106,7 +86,9 @@ maintenanceCCTVSchema.pre("save", async function (next) {
 
 maintenanceCCTVSchema.pre(/^find/, function (next) {
   this.populate("user", "id username role"); // Aplica a cualquier consulta de tipo find
-  this.populate("ubication", "id name ubication");
+  this.populate("worker", "id name lastname categoryJob");
+  this.populate("cctvEquipment", "id nameofActive serialnumber");
+  this.populate("ubication", "id name");
   next();
 });
 

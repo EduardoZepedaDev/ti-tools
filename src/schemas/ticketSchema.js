@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const ticketSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido").trim(),
   date: z
     .date()
     .optional()

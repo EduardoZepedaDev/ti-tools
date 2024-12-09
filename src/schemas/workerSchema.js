@@ -21,9 +21,4 @@ export const workerSchema = z.object({
     .min(1, "La categoría del trabajo es obligatoria")
     .trim()
     .nonempty("La categoría del trabajo no puede estar vacía"),
-
-  // Ubicación del trabajador (se asume que es un ObjectId)
-  ubication: z
-    .string()
-    .regex(/^[0-9a-fA-F]{24}$/, "La ubicación debe ser un ID válido"),
 });

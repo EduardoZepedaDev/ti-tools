@@ -24,7 +24,6 @@ const activeSchema = new mongoose.Schema(
     worker: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Worker",
-      required: true,
     },
     // Número de serie del activo
     serialnumber: {

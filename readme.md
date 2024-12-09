@@ -1,8 +1,4 @@
-# Documentación de la Aplicación de Mantenimiento de CCTV
-
-## Descripción
-
-Esta aplicación permite la gestión de mantenimientos de equipos de CCTV, incluyendo la creación, actualización, eliminación y visualización de registros de mantenimiento. También incluye la gestión de trabajadores asignados a las tareas y activos de la organización, como cámaras de seguridad y otros equipos. La aplicación utiliza **Node.js**, **Express**, **Mongoose** y **MongoDB** para el backend, y **Cloudinary** para la gestión de imágenes.
+# Backend para Proyecto de TI TOOLS
 
 ## Tecnologías Usadas
 
@@ -16,3 +12,15 @@ Esta aplicación permite la gestión de mantenimientos de equipos de CCTV, inclu
 1. Clona el repositorio:
    ```bash
    git clone https://github.com/usuario/repositorio.git
+
+2. Entrar al archivo:
+    ```bash
+    cd ti-tools-back
+
+3. Instalación de dependencias:
+    ```bash
+    npm install
+
+4. Ejecutar el Backend:
+    ```bash
+    npm run dev

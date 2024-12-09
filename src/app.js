@@ -6,7 +6,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
-// import maintenancesmeetingRoutes from "./routes/maintenancesmeeting.routes.js";
+import maintenanceCCTVRoutes from "./routes/maintenanceCCTV.routes.js";
 import placeRoutes from "./routes/place.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import insumoRoutes from "./routes/insumo.routes.js";
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/v1", authRoutes);
-// app.use("/v1", maintenancesmeetingRoutes);
+app.use("/v1", maintenanceCCTVRoutes);
 app.use("/v1", placeRoutes);
 app.use("/v1", ticketRoutes);
 app.use("/v1", insumoRoutes);

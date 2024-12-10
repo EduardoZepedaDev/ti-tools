@@ -50,50 +50,50 @@ export const createMaintenanceCctv = async (req, res) => {
   }
 };
 
-// Actualizar un mantenimiento
-export const updateMaintenanceCctv = async (req, res) => {
-  const {
-    name,
-    category,
-    date,
-    cctvfailure_detail,
-    technical_inspectionFindings,
-    cctvEquipment,
-    ubication,
-    images,
-  } = req.body;
+// // Actualizar un mantenimiento
+// export const updateMaintenanceCctv = async (req, res) => {
+//   const {
+//     name,
+//     category,
+//     date,
+//     cctvfailure_detail,
+//     technical_inspectionFindings,
+//     cctvEquipment,
+//     ubication,
+//     images,
+//   } = req.body;
 
-  try {
-    // Manejo de imágenes
-    const images = req.files ? req.files.map((file) => file.path) : undefined;
+//   try {
+//     // Manejo de imágenes
+//     const images = req.files ? req.files.map((file) => file.path) : undefined;
 
-    // Actualizar el mantenimiento
-    const updatedMaintenanceCctv = await Cctv.findByIdAndUpdate(
-      req.params.id, // El ID del documento a actualizar
-      {
-        name,
-        category,
-        date,
-        cctvfailure_detail,
-        technical_inspectionFindings,
-        cctvEquipment,
-        images: images || undefined, // Si no se envían nuevas imágenes, no actualizar este campo
-        ubication,
-      },
-      { new: true, runValidators: true } // Devuelve el documento actualizado y aplica validaciones
-    );
+//     // Actualizar el mantenimiento
+//     const updatedMaintenanceCctv = await Cctv.findByIdAndUpdate(
+//       req.params.id, // El ID del documento a actualizar
+//       {
+//         name,
+//         category,
+//         date,
+//         cctvfailure_detail,
+//         technical_inspectionFindings,
+//         cctvEquipment,
+//         images: images || undefined, // Si no se envían nuevas imágenes, no actualizar este campo
+//         ubication,
+//       },
+//       { new: true, runValidators: true } // Devuelve el documento actualizado y aplica validaciones
+//     );
 
-    if (!updatedMaintenanceCctv) {
-      return res.status(404).json({ message: "Mantenimiento no encontrado" });
-    }
+//     if (!updatedMaintenanceCctv) {
+//       return res.status(404).json({ message: "Mantenimiento no encontrado" });
+//     }
 
-    res.status(200).json(updatedMaintenanceCctv); // Devuelve el mantenimiento actualizado
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al actualizar el mantenimiento", error });
-  }
-};
+//     res.status(200).json(updatedMaintenanceCctv); // Devuelve el mantenimiento actualizado
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error al actualizar el mantenimiento", error });
+//   }
+// };
 
 // Eliminar mantenimiento
 export const deleteMaintenanceCctv = async (req, res) => {

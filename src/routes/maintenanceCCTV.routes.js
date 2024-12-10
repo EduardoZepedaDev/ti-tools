@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   getMaintenancesCctv,
   createMaintenanceCctv,
-  updateMaintenanceCctv,
   deleteMaintenanceCctv,
 } from "../controllers/maintenanceCCTVController.js";
 import { authRequired } from "../middlewares/validateToken.js";
@@ -21,11 +20,5 @@ router.post(
   createMaintenanceCctv
 );
 router.delete("/maintenanceCctv/:id", authRequired, deleteMaintenanceCctv);
-router.put(
-  "/maintenanceCctv/:id",
-  authRequired,
-  upload.array("images", 10), // Manejo de imágenes opcionales
-  updateMaintenanceCctv
-);
 
 export default router;

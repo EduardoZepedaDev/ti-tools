@@ -15,6 +15,7 @@ import activeRoutes from "./routes/active.routes.js";
 import roomRoutes from "./routes/maintenanceRoom.routes.js";
 import celRoutes from "./routes/maintenanceCel.routes.js";
 import printerRoutes from "./routes/maintenancePrinter.routes.js";
+import lapRoutes from "./routes/maintenanceLap.routes.js";
 
 const app = express();
 app.use(cors());
@@ -32,5 +33,6 @@ app.use("/v1", activeRoutes);
 app.use("/v1", roomRoutes);
 app.use("/v1", celRoutes);
 app.use("/v1", printerRoutes);
+app.use("/v1", lapRoutes);
 
 export default app;

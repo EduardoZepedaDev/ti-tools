@@ -13,6 +13,7 @@ import insumoRoutes from "./routes/insumo.routes.js";
 import workerRoutes from "./routes/worker.routes.js";
 import activeRoutes from "./routes/active.routes.js";
 import roomRoutes from "./routes/maintenanceRoom.routes.js";
+import celRoutes from "./routes/maintenanceCel.routes.js";
 
 const app = express();
 app.use(cors());
@@ -28,5 +29,6 @@ app.use("/v1", insumoRoutes);
 app.use("/v1", workerRoutes);
 app.use("/v1", activeRoutes);
 app.use("/v1", roomRoutes);
+app.use("/v1", celRoutes);
 
 export default app;
